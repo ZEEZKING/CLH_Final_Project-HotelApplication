@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "nDBmBQ3vawOOTmDPjRE65LT7ZI4ztG+5s3ELcVacUtQ=",
+  "Source": "CLH_Final_Project",
+  "BasePath": "_content/CLH_Final_Project",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "CLH_Final_Project\\wwwroot",
+      "Source": "CLH_Final_Project",
+      "ContentRoot": "C:\\Users\\Harzeez\\Desktop\\CLH_Final_Project\\wwwroot\\",
+      "BasePath": "_content/CLH_Final_Project",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}
