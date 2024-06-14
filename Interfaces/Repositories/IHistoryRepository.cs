@@ -6,5 +6,6 @@ namespace CLH_Final_Project.Interfaces.Repositories
     {
         Task<History> GetHistoryById(int id);
         Task<List<History>> GetAllHistorys();
+        Task<History>  GetHistoryByCustomerId(int customerId);
     }
 }

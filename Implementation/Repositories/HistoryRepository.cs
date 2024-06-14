@@ -20,9 +20,19 @@ namespace CLH_Final_Project.Implementation.Repositories
                 .ToListAsync();
         }
 
+        public async Task<History> GetHistoryByCustomerId(int customerId)
+        {
+            return await _Context.History
+                .Include(x => x.Customer)
+                .Where(c => c.CustomerId == customerId)
+                .Include(x => x.Bookings)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<History> GetHistoryById(int id)
         {
             return await _Context.History
+                .Include(x => x.Bookings)
                 .Where(x => x.Id == id)
                 .SingleOrDefaultAsync();
         }

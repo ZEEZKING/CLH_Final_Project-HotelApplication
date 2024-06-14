@@ -37,5 +37,17 @@ namespace CLH_Final_Project.Controllers
             }
             return Ok(historys);
         }
+
+        [HttpGet("GetHistory/{customerId}")]
+
+        public async Task<IActionResult> GetCustomerHistory([FromRoute] int customerId)
+        {
+            var history = await _history.GetHistoryByCustomerId(customerId);
+            if (history.Sucesss == false)
+            {
+                return BadRequest(history);
+            }
+            return Ok(history);
+        }
     }
 }

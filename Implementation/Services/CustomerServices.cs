@@ -55,7 +55,7 @@ namespace CLH_Final_Project.Implementation.Services
             await _userRepository.UpdateAsync(customer.User);
             return new BaseResponse
             {
-                Message = "Custoemr Deleted Successfully",
+                Message = "Customer Deleted Successfully",
                 Sucesss = true
             };
         }

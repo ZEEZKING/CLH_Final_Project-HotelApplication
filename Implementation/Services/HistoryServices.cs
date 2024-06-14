@@ -9,6 +9,10 @@ namespace CLH_Final_Project.Implementation.Services
     public class HistoryServices : IHistoryServices
     {
         private readonly IHistoryRepository _historyRepository;
+        public HistoryServices(IHistoryRepository  historyRepository)
+        {
+            _historyRepository = historyRepository;
+        }
         public async Task<HistorysResponseModel> GetAllHistory()
         {
            var history = await _historyRepository.GetAllHistorys();
@@ -22,16 +26,16 @@ namespace CLH_Final_Project.Implementation.Services
                     {
                         Id = x.Id,
                         BookingId = x.BookingId,
-                        BookingDtos = (BookingDto)history.Select(x => new BookingDto
-                        {   
-                                Id = x.Id,
-                                CheckIn = x.Bookings.CheckIn,
-                                CheckOut = x.Bookings.CheckOut,
-                                Duration = x.Bookings.Duration,
-                                ReferenceNo = x.Bookings.ReferenceNo,
-                                Bookings = x.Bookings.Bookings
-                          
-                        })
+                        CustomerId = x.CustomerId,
+                        BookingDtos = new BookingDto
+                        {
+                            Id = x.Bookings.Id,
+                            CheckIn = x.Bookings.CheckIn,
+                            CheckOut = x.Bookings.CheckOut,
+                            Duration = x.Bookings.Duration,
+                            ReferenceNo = x.Bookings.ReferenceNo,
+                            Quantity = x.Bookings.Quantity,
+                        }
                     }).ToList()
                 };
                
@@ -40,6 +44,39 @@ namespace CLH_Final_Project.Implementation.Services
             {
                 Message = "History Not Found",
                 Sucesss = false
+            };
+        }
+
+        public async Task<HistoryResponseModel> GetHistoryByCustomerId(int customerId)
+        {
+           var customerHistory =  await _historyRepository.GetHistoryByCustomerId(customerId);
+            if(customerHistory != null)
+            {
+                return new HistoryResponseModel
+                {
+                    Message = "History was found sucessfully",
+                    Sucesss = true,
+                    Data = new HistoryDto
+                    {
+                        Id = customerHistory.Id,
+                        BookingId = customerHistory.BookingId,
+                        BookingDtos = new BookingDto
+                        {
+                            CheckIn = customerHistory.Bookings.CheckIn,
+                            CheckOut = customerHistory.Bookings.CheckOut,
+                            Terminate = customerHistory.Bookings.Terminate,
+                            Duration = customerHistory.Bookings.Duration,
+                            ReferenceNo = customerHistory.Bookings.ReferenceNo,
+                            Quantity =  customerHistory.Bookings.Quantity,
+                        }
+
+                    }
+                };
+            }
+            return new HistoryResponseModel
+            {
+                Message = "History Not Found",
+                Sucesss = false,
             };
         }
 
@@ -63,7 +100,9 @@ namespace CLH_Final_Project.Implementation.Services
                             Terminate = history.Bookings.Terminate,
                             Duration = history.Bookings.Duration,
                             ReferenceNo = history.Bookings.ReferenceNo,
+                            Quantity = history.Bookings.Quantity,
                         }
+
                     }
                 };
             }

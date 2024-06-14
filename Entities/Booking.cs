@@ -19,6 +19,7 @@ namespace CLH_Final_Project.Entities
         public Room Room{get; set;} 
         public PaymentReference Payment { get; set;}
         public History History { get; set;}
+        public Sale Sale { get; set;}
 
         
     }

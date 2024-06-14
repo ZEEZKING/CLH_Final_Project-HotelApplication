@@ -29,6 +29,7 @@ builder.Services.AddCors(c => c
                .AddPolicy("SkyBox", builder => builder
                .AllowAnyHeader()
                .AllowAnyMethod()
+               /*.WithOrigins("http://127.0.0.1:5502")*/
                .AllowAnyOrigin()));
 
 builder.Services.AddControllers();
@@ -67,6 +68,9 @@ builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeReposito
 builder.Services.AddScoped<IReviewServices, ReviewServices>();
 builder.Services.AddScoped<IReviewRepsoitory, ReviewRepository>();
 
+builder.Services.AddScoped<IHistoryServices, HistoryServices>();
+builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPayStackPayment, PayStackPayment>();
 
@@ -98,9 +102,6 @@ builder.Services.AddAuthentication(auth =>
 });
 
 
-
-
-
 var app = builder.Build();
 
 
@@ -127,3 +128,6 @@ app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
+
+
+

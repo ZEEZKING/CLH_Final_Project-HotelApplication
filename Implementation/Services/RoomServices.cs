@@ -59,7 +59,7 @@ namespace CLH_Final_Project.Implementation.Services
                     Price = model.Price,
                     Types = model.Types,
                     Quantity = 1,
-                    IsAvailable = true
+                    IsAvailable = false
 
                 };
 

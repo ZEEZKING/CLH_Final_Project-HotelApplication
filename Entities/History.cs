@@ -4,5 +4,8 @@
     {
        public int BookingId { get; set; }
        public Booking Bookings { get; set; }
+       public int CustomerId { get; set; }
+       public Customer Customer { get; set; }
+
     }
 }

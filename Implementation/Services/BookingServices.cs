@@ -19,12 +19,14 @@ namespace CLH_Final_Project.Implementation.Services
         private readonly IRoomRepository _roomRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMailServices _mailServices;
-        public BookingServices(IBookingRepository bookingRepository, IRoomRepository roomRepository, IUserRepository userRepository, IMailServices mailServices)
+        private readonly IHistoryRepository _historyRepository;
+        public BookingServices(IBookingRepository bookingRepository, IRoomRepository roomRepository, IUserRepository userRepository, IMailServices mailServices, IHistoryRepository historyRepository)
         {
             _bookingRepository = bookingRepository;
             _roomRepository = roomRepository;
             _userRepository = userRepository;
             _mailServices = mailServices;
+            _historyRepository = historyRepository;
         }
 
         public async Task<BookingsResponseModel> CreateBooking(CreateBookingRequestModel model, int userId)
@@ -43,7 +45,7 @@ namespace CLH_Final_Project.Implementation.Services
             {
                 totalDuration += item.Quantity;
             }
-
+            var user = await _userRepository.GetUserById(userId);
             // Create individual BookingDto objects for each room
             foreach (var item in model.BookingItems)
             {
@@ -63,6 +65,14 @@ namespace CLH_Final_Project.Implementation.Services
 
                     await _bookingRepository.CreateAsync(book);
 
+                    var hist = new History
+                    {
+                        BookingId = book.Id,
+                        CustomerId = user.Customer.Id,
+                        DateCreated =  DateTime.Now
+                    };
+                    await _historyRepository.CreateAsync(hist);
+
 
              
 
@@ -73,13 +83,13 @@ namespace CLH_Final_Project.Implementation.Services
                         await _roomRepository.UpdateAsync(room);
                     }
 
-                    var user = await _userRepository.GetAsync(userId);
+                    
                     var sender = new MailRequset
                     {
                         Subject = "Booking @SkyBoxHotel",
                         ToEmail = user.Email,
                         ToName = user.Name,
-                        HtmlContent = $"<html><body><h1>Hello {user.Name}, You Have Successfully Book a Room{room.RoomNumber} and your BookingCard {book.ReferenceNo} </h1><h4>Your BookingCard will expire in {book.CheckOut}</h4></body></html>",
+                        HtmlContent = $"<html><body><h1>Hello {user.Name}, You Have Successfully Book a Room With the RoomNumber {room.RoomNumber} and your BookingCard {book.ReferenceNo} </h1><h4>Your BookingCard will expire in {book.CheckOut}</h4></body></html>",
                     };
                     _mailServices.SendEmailAsync(sender);
 
@@ -164,6 +174,8 @@ namespace CLH_Final_Project.Implementation.Services
                         Id = booking.Id,
                         CheckIn = booking.CheckIn,
                         CheckOut = booking.CheckOut,
+                        Duration = booking.Duration,
+                        Quantity = booking.Quantity, 
                         ReferenceNo = booking.ReferenceNo,
                     }
                 };
@@ -175,12 +187,16 @@ namespace CLH_Final_Project.Implementation.Services
             };
         }
 
+
+
+
+
         public async Task<BaseResponse> TerminateBooking(int id,int userId)
         {
             var booking = await _bookingRepository.GetAsync(x => x.Id == id);
             var roomUpt = await _roomRepository.GetRoomByIdAsync(booking.RoomId);
             var user = await _userRepository.GetAsync(userId);
-            if (booking != null)
+            if (booking != null && booking.Bookings != BookingStatus.CheckedOut)
             {
                 if (booking.Bookings == BookingStatus.pending)
                 {
@@ -207,7 +223,7 @@ namespace CLH_Final_Project.Implementation.Services
             }
             return new BaseResponse
             {
-                Message = "Booking Was not Successfully terminated",
+                Message = "Booking Was not Successfully terminated or Booking Has Already Been CheckedOut ",
                 Sucesss = false,
             };
         }
@@ -265,7 +281,7 @@ namespace CLH_Final_Project.Implementation.Services
             {
                 return new BookingResponseModel
                 {
-                    Message = "BookingCard Already used",
+                    Message = "BookingCard Already used Or It has been Terminated",
                     Sucesss = false,
                 };
             }

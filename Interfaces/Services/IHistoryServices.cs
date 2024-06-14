@@ -7,5 +7,6 @@ namespace CLH_Final_Project.Interfaces.Services
     {
         Task<HistoryResponseModel> GetHistoryById(int id);
         Task<HistorysResponseModel> GetAllHistory();
+        Task<HistoryResponseModel>  GetHistoryByCustomerId(int customerId);
     }
 }

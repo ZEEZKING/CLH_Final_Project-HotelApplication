@@ -13,5 +13,6 @@ namespace CLH_Final_Project.Entities
         public List<PaymentReference> payments { get; set; } = new List<PaymentReference>();
         public List<Review> Review { get; set; } = new List<Review>();
         public List<Order> Orders { get; set; } = new List<Order>();
+        public List<History> Histories { get; set; } = new List<History>();
     }
 }
